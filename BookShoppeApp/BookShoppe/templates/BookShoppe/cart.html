@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookShoppe | Cart</title>
+    <link rel="stylesheet" href="{% static 'BookShoppe/style.css' %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="navbar" style="background-color:black ;">
+        <div class="logo">
+            <a href="/index"><h3>Book<span>Shoppe</span></h3></a>
+        </div>
+        <div class="menu">
+            <a href="/index">Home</a>
+            <a href="/book_list">Books</a>
+            <a href="/cart"><i class='bx bx-cart-alt'></i>Cart</a>
+        </div>
+        <div class="signup">
+            {% if request.user.is_authenticated %}
+                <a href=""><i class='bx bx-user'></i> {{request.user}}</a>
+                <a href="/logout_page" style="padding-left: 10px;"><i class='bx bx-log-out'></i></a>
+            {% else %}
+                <a href="/sign_up"><i class='bx bx-user'></i> Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
+    {% if cart %}
+    <h3 class="title">Cart Items</h3>
+
+    <table>
+        <tr>
+            <th colspan="2">Books</th>
+            
+            <th>price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th>Remove</th>
+        </tr>
+        {% for book in cart %}
+        <tr>
+            <td><img src="{{book.book.image.url}}" height="75px" alt="{{book.title}}"></td>
+            <td style="padding: 0px;">
+                <div>
+                    <p style="margin: auto;">{{book.book.title}}</p>
+                    <small>{{book.book.author}}</small>
+                </div>
+            </td>
+            <td>{{book.book.price}}</td>
+            <td style="text-align: center;">{{book.book_qty}}</td>
+            <td class="amt">{{book.total_cost}}</td>
+            <td><a href="{% url 'remove_cart' book.id %}" onclick="return confirm('Are you sure? to Remove')" style="color: red;">Remove</a></td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td></td>
+            <td></td>
+            <td colspan="2" style="text-align: center;"><b>Cart Total</b></td>
+            <td id="net">0</td>
+            <td>                
+                <a href="/checkout" class="btn" id="btnCart" style="margin: 0;">Checkout</a>
+            </td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        <p>&copy; 2023 BookShoppe. All rights reserved.</p>
+    </div>
+
+    <script>
+        const nodes = document.querySelectorAll('.amt');
+        const arr = Array.from(nodes);
+        const totalAmount = arr.reduce((acc, curr) => {
+        const amount = parseFloat(curr.textContent.replace('$', '').trim());
+            return !isNaN(amount) ? acc + amount : acc;
+        }, 0);
+
+        const formattedTotal = totalAmount.toFixed(2); 
+        const displayTotal = `$ : ${formattedTotal}`;
+
+        document.getElementById("net").innerHTML = displayTotal;
+
+    </script>
+        {% else %}
+        <div class="empty-cart-message" style="text-align: center;">
+            <h3>Your cart is empty</h3>
+            <p>Start purchasing some amazing books from our store!</p>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2023 BookShoppe. All rights reserved.</p>
+        </div>
+        {% endif %}
+        
+</body>
+</html>

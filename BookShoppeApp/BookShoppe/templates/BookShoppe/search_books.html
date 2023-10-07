@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookShoppe | Search</title>
+    <link rel="stylesheet" href="{% static 'BookShoppe/style.css' %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+
+    <div class="navbar" style="background-color:black ;">
+        <div class="logo">
+            <a href="/index"><h3>Book<span>Shoppe</span></h3></a>
+        </div>
+        <div class="menu">
+            <a href="/index">Home</a>
+            <a href="/book_list">Books</a>
+            <a href="/cart"><i class='bx bx-cart-alt'></i>Cart</i></a>
+        </div>
+        <form action="/search_books/" method="post" id="search-books">
+            {% csrf_token %}
+            <div class="search-bar">
+                <input type="text" placeholder="Search by title or author.." id="search-input" name="searched">
+                <div class="search-btn" onclick="submitForm()">
+                    <i class='bx bx-search-alt-2'></i>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="small-container">
+        {% if searched %}
+            <h3 class="title">Search Results...</h3>
+        {% endif %}
+        <div class="row">
+            {% if books %}
+            {% for book in books %}
+            <div class="col-md-3">
+                <a href="{% url 'book_details' book.title %}">
+                    <div class="book">
+                        <img src="{{ book.image.url }}" alt="books">
+                        <div class="book-details">
+                            <h3>{{ book.title }}</h3>
+                            <p>Author: {{ book.author }}</p>
+                            <p>Price: ${{ book.price }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+            {% else %}
+                <h3>No Search Results Found</h3>
+            {% endif %}
+
+        </div>
+            
+    </div>
+
+
+    <div class="footer">
+        <p>&copy; 2023 BookShoppe. All rights reserved.</p>
+    </div>
+
+        
+    <script>
+        function submitForm() {
+        var searchInput = document.getElementById('search-input').value.trim();
+        if (searchInput){
+            document.getElementById('search-books').submit();
+        }
+    }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookShoppe | Books Details</title>
+    <link rel="stylesheet" href="{% static 'BookShoppe/style.css' %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="navbar" style="background-color:black ;">
+        <div class="logo">
+            <a href="/index"><h3>Book<span>Shoppe</span></h3></a>
+        </div>
+        <div class="menu">
+            <a href="/index">Home</a>
+            <a href="/book_list">Books</a>
+            <a href="/cart"><i class='bx bx-cart-alt'></i>Cart</a>
+        </div>
+        <div class="signup">
+            {% if request.user.is_authenticated %}
+                <a href=""><i class='bx bx-user'></i> {{request.user}}</a>
+                <a href="/logout_page" style="padding-left: 10px;"><i class='bx bx-log-out'></i></a>
+            {% else %}
+                <a href="/sign_up"><i class='bx bx-user'></i> Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="small-container single-product">
+        <div class="row">
+            <div class="col-2">
+                <img src="{{books.image.url}}" width="100%">
+            </div>
+            <div class="col-2">
+                <h4>{{ books.title }}</h4>
+                <p>Author: {{ books.author }}</p>
+                <p>Price: ${{ books.price }}</p>
+                <input type="hidden" value="{{ books.id }}" id="bid">
+                {%if books.quantity > 0 %}
+                <input type="number" name="qty" id="txtQty" value="1" class="btn-qty" min="1" max="10">
+                <a href="" class="btn" id="btnCart">Add to Cart</a>
+                {% else %}
+                <a href="" class="btn" id="btnCart" style="background-color: aquamarine;">Out of Stock</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2023 BookShoppe. All rights reserved.</p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function(event){
+            const txtQty = document.getElementById("txtQty");
+            const bid = document.getElementById("bid");
+            const btnCart = document.getElementById("btnCart");
+    
+            btnCart.addEventListener("click", function(){
+                const qty = parseInt(txtQty.value);
+                if(qty > 0){
+                    let postObj = {
+                        book_qty: qty,
+                        bid: bid.value,
+                    };
+    
+                    fetch("/addtocart", {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        },
+                        body: JSON.stringify(postObj)
+                    }).then(response => {
+                        return response.json();
+                    }).then(data => {
+                        alert(data['status']);
+                    });
+                } else {
+                    alert("Please Enter a Quantity");
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
