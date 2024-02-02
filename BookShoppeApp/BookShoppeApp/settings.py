@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-%0_il*1+k1)+^$+187lm#3g)u*t8e5)+2&7=)8cg_sq2xu1^i$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['bookshoppe-app.netlify.app', '*']
+ALLOWED_HOSTS = []
+
 
 # Application definition
 
