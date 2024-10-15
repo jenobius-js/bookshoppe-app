@@ -125,6 +125,9 @@ STATICFILES_DIRS = [
     BASE_DIR/'static'
 ]
 
+STRIPE_PUBLIC_KEY = 'your_stripe_public_key'
+STRIPE_SECRET_KEY = 'your_stripe_secret_key'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
